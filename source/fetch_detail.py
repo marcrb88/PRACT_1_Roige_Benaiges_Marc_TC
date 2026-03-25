@@ -11,20 +11,7 @@ def get_driver():
     chrome_options.add_argument("user-agent=Mozilla/5.0")
     return webdriver.Chrome(options=chrome_options)
 
-
-def fetch_detail(url):
-    driver = get_driver()
-    driver.get(url)
-    time.sleep(1.5)
-
-    # DEBUG
-    html = driver.page_source
-    #with open("debug_detail.html", "w", encoding="utf-8") as f:
-    #    f.write(html)
-
-    soup = BeautifulSoup(html, "html.parser")
-    driver.quit()
-
+def parse_detail_from_soup(soup):
     data = {}
 
     # TÍTOL
@@ -35,7 +22,6 @@ def fetch_detail(url):
     estat = soup.select_one("p.estat")
     data["estat"] = estat.get_text(strip=True) if estat else None
 
-    # DADES DEL DL (Identificador, Expedient, etc.)
     data["detalls"] = {}
     for group in soup.select("dl.dades-oferta .dl-group"):
         dt = group.select_one("dt")
@@ -51,11 +37,21 @@ def fetch_detail(url):
         img = a.select_one("img[src*='icon-pdf']")
         if img:
             href = a.get("href")
-            pdfs.append(href)
+            if href:
+                pdfs.append(href)
 
-    data["pdfs_adjunts"] = pdfs
+    data["pdfs"] = pdfs
 
     return data
+def fetch_detail(url):
+    driver = get_driver()
+    driver.get(url)
+    time.sleep(0.5)
+
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+    driver.quit()
+
+    return parse_detail_from_soup(soup)
 
 
 # TEST
