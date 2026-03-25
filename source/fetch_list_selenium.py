@@ -3,7 +3,8 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import time
 
-BASE_URL = "https://cido.diba.cat/oposicions?filtreEstat[terminiPendent]=1&filtreEstat[terminiObert]=1"
+BASE_URL = "https://cido.diba.cat/oposicions?filtreParaulaClau%5Bkeyword%5D=&ordenacio=DEFAULT&ordre=DESC&showAs=GRID&filtreProximitat%5Bpoblacio%5D=&filtreProximitat%5Bkm%5D=&filtreProximitat%5Blatitud%5D=&filtreProximitat%5Blongitud%5D=&filtreDataPublicacio%5Bde%5D=&filtreDataPublicacio%5BfinsA%5D=&filtreEstat%5BterminiPendent%5D=1&filtreEstat%5BterminiObert%5D=1&filtreSeleccioTitulacio%5BtitulacioRequerida%5D%5Bkeyword%5D=&opcions-menu=&_token=TdBa8CZVfaNTC5TkdQ0vX63GKPRBmtuPgucxBmD2TDY&opcions-menu=&filtreMateria%5Boptions%5D%5B%5D=24"
+
 
 def get_driver():
     chrome_options = Options()
@@ -27,14 +28,17 @@ def extract_titles_from_soup(soup):
     results = []
 
     for item in items:
-        titulo = item.select_one("h2.panel-title a")
-        if titulo:
-            results.append(titulo.get_text(strip=True))
+        a = item.select_one("h2.panel-title a")
+        if a:
+            results.append({
+                "titol": a.get_text(strip=True),
+                "url": "https://cido.diba.cat" + a.get("href")
+            })
 
     return results
 
 
-def fetch_all_titles():
+def fetch_all_titles_and_urls():
     driver = get_driver()
 
     all_results = []
@@ -44,21 +48,14 @@ def fetch_all_titles():
         print(f"Processant pàgina {page}...")
 
         soup = fetch_page(driver, page)
-        titles = extract_titles_from_soup(soup)
+        entries = extract_titles_from_soup(soup)
 
-        if not titles:
+        if not entries:
             print("No hi ha més pàgines.")
             break
 
-        all_results.extend(titles)
+        all_results.extend(entries)
         page += 1
 
     driver.quit()
     return all_results
-
-
-if __name__ == "__main__":
-    titles = fetch_all_titles()
-    print(f"Total oposicions trobades: {len(titles)}")
-    for t in titles:
-        print(t)
