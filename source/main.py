@@ -57,9 +57,4 @@ def scrape():
 
 if __name__ == "__main__":
     data = scrape()
-
-    print("\n3 registres del dataset:")
-    for row in data[:3]:
-        print(row)
-
-    print("\nDataset complet disponible.")
+    #TODO Generar dataset.
