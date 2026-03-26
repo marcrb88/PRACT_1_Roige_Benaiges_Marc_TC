@@ -52,11 +52,3 @@ def fetch_detail(url):
     driver.quit()
 
     return parse_detail_from_soup(soup)
-
-
-# TEST
-if __name__ == "__main__":
-    url = "https://cido.diba.cat/oposicions/21251372/borsa-de-treball-de-places-de-tecnic-de-gestio-deducacio-i-difusio-ambiental-diputacio-de-barcelona"
-    info = fetch_detail(url)
-    for k, v in info.items():
-        print(k, ":", v)
