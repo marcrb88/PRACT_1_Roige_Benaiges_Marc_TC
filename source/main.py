@@ -1,10 +1,15 @@
+from pathlib import Path
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+from export_dataset import save_dataset_as_csv
 from fetch_list_selenium import fetch_all_titles_and_urls
 from fetch_detail import parse_detail_from_soup
+
+
+DEFAULT_OUTPUT_PATH = Path(__file__).resolve().parent.parent / "dataset" / "cido_oposicions.csv"
 
 
 def get_driver():
@@ -57,4 +62,5 @@ def scrape():
 
 if __name__ == "__main__":
     data = scrape()
-    #TODO Generar dataset.
+    output_path = save_dataset_as_csv(data, DEFAULT_OUTPUT_PATH)
+    print(f"\nDataset guardat a: {output_path}")
