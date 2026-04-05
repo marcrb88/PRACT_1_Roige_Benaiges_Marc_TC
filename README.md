@@ -64,6 +64,6 @@ python source/main.py
 ## Dataset i DOI
 
 - Dataset CSV al repositori: `dataset/cido_oposicions.csv`
-- DOI de Zenodo: pendent de publicació
+- DOI de Zenodo: [10.5281/zenodo.19423997](https://doi.org/10.5281/zenodo.19423997)
 
 
