@@ -16,20 +16,11 @@ def parse_detail_from_soup(soup):
 
     # TÍTOL
     title = soup.select_one("h2.panel-title")
-    data["titol"] = title.get_text(strip=True) if title else None
+    data["title"] = title.get_text(strip=True) if title else None
 
     # ESTAT
     estat = soup.select_one("p.estat")
-    data["estat"] = estat.get_text(strip=True) if estat else None
-
-    data["detalls"] = {}
-    for group in soup.select("dl.dades-oferta .dl-group"):
-        dt = group.select_one("dt")
-        dd = group.select_one("dd")
-        if dt and dd:
-            clau = dt.get_text(strip=True)
-            valor = dd.get_text(" ", strip=True)
-            data["detalls"][clau] = valor
+    data["status"] = estat.get_text(strip=True) if estat else None
 
     # PDFS
     pdfs = []
@@ -41,6 +32,19 @@ def parse_detail_from_soup(soup):
                 pdfs.append(href)
 
     data["pdfs"] = pdfs
+
+    # DETALLS
+    details = {}
+    for group in soup.select("dl.dades-oferta .dl-group"):
+        dt = group.select_one("dt")
+        dd = group.select_one("dd")
+        if dt and dd:
+            clau = dt.get_text(strip=True)
+            valor = dd.get_text(" ", strip=True)
+            details[clau] = valor
+
+    data["details"] = details
+    print(data)
 
     return data
 def fetch_detail(url):

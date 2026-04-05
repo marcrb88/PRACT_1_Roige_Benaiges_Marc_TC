@@ -31,7 +31,7 @@ def scrape():
     dataset = []
 
     for i, entry in enumerate(entries, start=1):
-        print(f"\n({i}/{len(entries)}) Processant: {entry['titol']}")
+        print(f"\n({i}/{len(entries)}) Processant: {entry['title']}")
         url = entry["url"]
 
         try:
@@ -42,11 +42,10 @@ def scrape():
             detail = parse_detail_from_soup(soup)
 
             row = {
-                "titol": entry["titol"],
+                "title": entry["title"],
                 "url": url,
-                "estat": detail.get("estat"),
-                **detail.get("detalls", {}),
-                "pdfs": ", ".join(detail.get("pdfs", []))
+                "status": detail["status"],
+                **detail["details"],
             }
 
             dataset.append(row)

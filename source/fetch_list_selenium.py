@@ -31,7 +31,7 @@ def extract_titles_from_soup(soup):
         a = item.select_one("h2.panel-title a")
         if a:
             results.append({
-                "titol": a.get_text(strip=True),
+                "title": a.get_text(strip=True),
                 "url": "https://cido.diba.cat" + a.get("href")
             })
 

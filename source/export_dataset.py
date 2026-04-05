@@ -1,21 +1,16 @@
 import csv
 from pathlib import Path
 
+def collect_fieldnames(rows):
 
-DEFAULT_PRIORITY_FIELDS = ["titol", "url", "estat", "pdfs"]
+    fieldnames = list(rows[0].keys())
 
-
-def build_fieldnames(rows):
-    seen = set()
-    extra_fields = []
-
-    for row in rows:
+    for row in rows[1:]:
         for key in row.keys():
-            if key not in seen and key not in DEFAULT_PRIORITY_FIELDS:
-                seen.add(key)
-                extra_fields.append(key)
+            if key not in fieldnames:
+                fieldnames.append(key)
 
-    return DEFAULT_PRIORITY_FIELDS + sorted(extra_fields)
+    return fieldnames
 
 
 def save_dataset_as_csv(rows, output_path):
@@ -26,7 +21,7 @@ def save_dataset_as_csv(rows, output_path):
         output.write_text("", encoding="utf-8")
         return output
 
-    fieldnames = build_fieldnames(rows)
+    fieldnames = collect_fieldnames(rows)
 
     with output.open("w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames, extrasaction="ignore")
